@@ -1,0 +1,15 @@
+{
+    email you@example.com
+}
+
+# For public wildcard subdomains, Caddy needs a wildcard certificate.
+# That normally requires a DNS challenge plugin for your DNS provider.
+# Replace the tls block with your provider's DNS challenge config.
+myurl.com, *.myurl.com {
+    # Example shape only:
+    # tls {
+    #     dns <provider> <api_token>
+    # }
+
+    reverse_proxy 127.0.0.1:8000
+}
