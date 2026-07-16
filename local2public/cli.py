@@ -7,7 +7,7 @@ from urllib.parse import urlparse, urlunparse
 import httpx
 import socketio
 
-SERVER_URL = os.getenv("LTP_SERVER_URL", "http://localhost:8000")
+SERVER_URL = os.getenv("LTP_SERVER_URL", "http://server-admin.alwaysdata.net")
 PUBLIC_BASE_URL = os.getenv("LTP_PUBLIC_BASE_URL")
 NAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
 HOP_BY_HOP_HEADERS = {
@@ -112,7 +112,7 @@ def tunnel(local_port: int, name: str, verbose: bool):
             })
 
     try:
-        sio.connect(SERVER_URL, transports=["websocket", "polling"])
+        sio.connect(SERVER_URL, transports=["polling"])
         sio.emit("register", {"port": local_port, "name": name})
         sio.wait()
     except KeyboardInterrupt:

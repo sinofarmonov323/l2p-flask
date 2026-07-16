@@ -9,7 +9,7 @@ from werkzeug.wrappers import Response
 from threading import Event
 
 ENABLE_DOCS = os.getenv("LTP_ENABLE_DOCS", "").lower() in {"1", "true", "yes"}
-BASE_DOMAIN = os.getenv("LTP_BASE_DOMAIN", "localhost").strip().lower().rstrip(".")
+BASE_DOMAIN = os.getenv("LTP_BASE_DOMAIN", "server-admin.alwaysdata.net").strip().lower().rstrip(".")
 REQUEST_TIMEOUT = float(os.getenv("LTP_REQUEST_TIMEOUT", "30"))
 MAX_BODY_BYTES = int(os.getenv("LTP_MAX_BODY_BYTES", str(10 * 1024 * 1024)))
 NAME_RE = re.compile(r"^[a-z0-9](?:[a-z0-9-]{0,61}[a-z0-9])?$")
@@ -26,7 +26,7 @@ HOP_BY_HOP_HEADERS = {
 
 app = Flask(__name__, template_folder="templates")
 app.config["SECRET_KEY"] = os.getenv("SECRET_KEY", "your-secret-key")
-socketio = SocketIO(app, async_mode="threading", cors_allowed_origins="*")
+socketio = SocketIO(app, async_mode="threading", cors_allowed_origins="*", transports=["polling"])
 
 # stores active tunnels: name -> sid (socket id)
 tunnels: dict[str, str] = {}
@@ -164,7 +164,7 @@ def handle_register(data):
         return
 
     tunnels[name] = request.sid
-    print(f"Client registered: {name} -> localhost:{port}")
+    print(f"Client registered: {name} -> server-admin.alwaysdata.net:{port}")
 
     emit("registered", {"name": name})
     if BASE_DOMAIN:
